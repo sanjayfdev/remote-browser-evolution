@@ -1,0 +1,312 @@
+{
+  "posts": [
+    {
+      "id": 0,
+      "baseUrl": "",
+      "steps": [
+        {
+          "id": 1759298550352,
+          "value": "",
+          "message": ""
+        }
+      ]
+    },
+    {
+      "id": 3,
+      "baseUrl": "https://stamenssoftware.com",
+      "steps": [
+        {
+          "message": "Entered Url",
+          "name": "https://stamenssoftware.com",
+          "tag": "INPUT",
+          "value": "stamenssoftware.com"
+        },
+        {
+          "name": "",
+          "tag": "BUTTON",
+          "value": "Go",
+          "message": "Clicked on"
+        }
+      ]
+    },
+    {
+      "0": {
+        "id": 1,
+        "baseUrl": "https://stamenssoftware.com",
+        "steps": [
+          {
+            "message": "Entered Url",
+            "name": "https://stamenssoftware.com",
+            "tag": "INPUT",
+            "value": "stamenssoftware.com"
+          },
+          {
+            "name": "",
+            "tag": "A",
+            "value": "About",
+            "href": "https://stamenssoftware.com/about",
+            "message": "Clicked on",
+            "id": 1759312788324
+          },
+          {
+            "name": "",
+            "tag": "A",
+            "value": "Services",
+            "href": "https://stamenssoftware.com/service",
+            "message": "Clicked on",
+            "id": 1759312788940
+          },
+          {
+            "name": "",
+            "tag": "A",
+            "value": "Career",
+            "href": "https://stamenssoftware.com/career",
+            "message": "Clicked on",
+            "id": 1759312789614
+          },
+          {
+            "name": "",
+            "tag": "A",
+            "value": "Contact",
+            "href": "https://stamenssoftware.com/contact",
+            "message": "Clicked on",
+            "id": 1759312790231
+          },
+          {
+            "name": "Name",
+            "tag": "INPUT",
+            "value": "Mukesh Kumar",
+            "message": "Entered",
+            "id": 1759312792119
+          },
+          {
+            "name": "Email",
+            "tag": "INPUT",
+            "value": "saloni@yopmail.com",
+            "message": "Entered",
+            "id": 1759312793021
+          },
+          {
+            "name": "Phone",
+            "tag": "INPUT",
+            "value": "",
+            "message": "Clicked on",
+            "id": 1759312793085
+          },
+          {
+            "name": "Phone",
+            "tag": "INPUT",
+            "value": "1234567890",
+            "message": "Entered",
+            "id": 1759312793954
+          },
+          {
+            "name": "Message",
+            "tag": "TEXTAREA",
+            "value": "jhguyyu",
+            "message": "Entered",
+            "id": 1759312796949
+          },
+          {
+            "name": "captcha",
+            "tag": "INPUT",
+            "value": "dfdsfsf",
+            "message": "Entered",
+            "id": 1759312801932
+          },
+          {
+            "name": "",
+            "tag": "A",
+            "value": "Work with Us",
+            "href": "https://stamenssoftware.com/contact",
+            "message": "Clicked on",
+            "id": 1759312802012
+          },
+          {
+            "name": "Close",
+            "tag": "BUTTON",
+            "value": "X",
+            "message": "Clicked on",
+            "id": 1759312808104
+          },
+          {
+            "name": "",
+            "tag": "A",
+            "value": "Services",
+            "href": "https://stamenssoftware.com/service",
+            "message": "Clicked on",
+            "id": 1759312831940
+          },
+          {
+            "name": "",
+            "tag": "A",
+            "value": "About",
+            "href": "https://stamenssoftware.com/about",
+            "message": "Clicked on",
+            "id": 1759312835985
+          },
+          {
+            "tag": "SECTION",
+            "value": "Clicked on About UsStamens SoftwareYou might want to include how it started, any key milestones, and what sets you apart from others in your field.HomeAbout",
+            "message": "Clicked on",
+            "id": 1759312876571
+          },
+          {
+            "tag": "SECTION",
+            "value": "About UsInnovate business solution for startup companiesAt Stamens Software, we specialize in innovative business solutions tailored for startups. Our mission is to help you identify growth opportunities and expand your market presence through cutting-edge strategies and technology. We provide innovative software solutions tailored for startup success. Our expertise helps identify and seize new market opportunities. We focus on optimizing processes to boost operational efficiency and reduce waste. Advanced analytics enable informed decision-making with data-driven insights.About Us10+Years of experience in startup building",
+            "message": "Clicked on",
+            "id": 1759312899796
+          }
+        ]
+      },
+      "id": "a843"
+    },
+    {
+      "0": {
+        "id": 1,
+        "baseUrl": "https://stamenssoftware.com",
+        "steps": [
+          {
+            "message": "Entered Url",
+            "name": "https://stamenssoftware.com",
+            "tag": "INPUT",
+            "value": "stamenssoftware.com"
+          },
+          {
+            "name": "",
+            "tag": "A",
+            "value": "Home",
+            "href": "https://stamenssoftware.com/",
+            "message": "Clicked on",
+            "id": 1759317211533
+          },
+          {
+            "name": "",
+            "tag": "A",
+            "value": "Services",
+            "href": "https://stamenssoftware.com/service",
+            "message": "Clicked on",
+            "id": 1759317212197
+          },
+          {
+            "name": "",
+            "tag": "A",
+            "value": "Career",
+            "href": "https://stamenssoftware.com/career",
+            "message": "Clicked on",
+            "id": 1759317212937
+          },
+          {
+            "name": "",
+            "tag": "A",
+            "value": "Work with Us",
+            "href": "https://stamenssoftware.com/career",
+            "message": "Clicked on",
+            "id": 1759317213553
+          },
+          {
+            "name": "Name",
+            "tag": "INPUT",
+            "value": "Mukesh Kumar",
+            "message": "Entered",
+            "id": 1759317215928
+          },
+          {
+            "name": "Email",
+            "tag": "INPUT",
+            "value": "saloni@yopmail.com",
+            "message": "Entered",
+            "id": 1759317216960
+          },
+          {
+            "name": "Phone",
+            "tag": "INPUT",
+            "value": "",
+            "message": "Clicked on",
+            "id": 1759317217071
+          },
+          {
+            "name": "Phone",
+            "tag": "INPUT",
+            "value": "1234567890",
+            "message": "Entered",
+            "id": 1759317218293
+          },
+          {
+            "name": "Message",
+            "tag": "TEXTAREA",
+            "value": "ggjj",
+            "message": "Entered",
+            "id": 1759317219828
+          },
+          {
+            "name": "Close",
+            "tag": "BUTTON",
+            "value": "X",
+            "message": "Clicked on",
+            "id": 1759317221059
+          }
+        ]
+      },
+      "1": {
+        "id": 2,
+        "baseUrl": "https://pexels.com",
+        "steps": [
+          {
+            "message": "Entered Url",
+            "name": "https://pexels.com",
+            "tag": "INPUT",
+            "value": "pexels.com"
+          },
+          {
+            "name": "",
+            "tag": "A",
+            "value": "Videos",
+            "href": "https://www.pexels.com/videos/",
+            "message": "Clicked on",
+            "id": 1759317233645
+          },
+          {
+            "name": "",
+            "tag": "A",
+            "value": "Leaderboard",
+            "href": "https://www.pexels.com/leaderboard/",
+            "message": "Clicked on",
+            "id": 1759317234391
+          },
+          {
+            "name": "",
+            "tag": "A",
+            "value": "Challenges",
+            "href": "https://www.pexels.com/challenges/",
+            "message": "Clicked on",
+            "id": 1759317235059
+          },
+          {
+            "name": "",
+            "tag": "A",
+            "value": "Videos",
+            "href": "https://www.pexels.com/videos/",
+            "message": "Clicked on",
+            "id": 1759317242900
+          },
+          {
+            "name": "",
+            "tag": "A",
+            "value": "Leaderboard",
+            "href": "https://www.pexels.com/leaderboard/",
+            "message": "Clicked on",
+            "id": 1759317244919
+          },
+          {
+            "tag": "SPAN",
+            "value": "Kelly",
+            "message": "Clicked on",
+            "id": 1759317248461
+          }
+        ]
+      },
+      "id": "d651"
+    }
+  ]
+}
