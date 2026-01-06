@@ -6,6 +6,7 @@ ENV DISPLAY=:99
 RUN apt-get update && apt-get install -y \
     chromium \
     xvfb \
+    iproute2 \
     dbus-x11 \
     fonts-liberation \
     libnss3 \
@@ -28,6 +29,9 @@ RUN apt-get update && apt-get install -y \
     python3-websockets \
     python3-gi \
     python3-gi-cairo \
+    libnice10 \
+    gir1.2-nice-0.1 \
+    gstreamer1.0-nice \
     gir1.2-gstreamer-1.0 \
     gir1.2-gst-plugins-base-1.0 \
     gir1.2-gst-plugins-bad-1.0 \
@@ -52,4 +56,4 @@ RUN chmod +x start.sh
 
 EXPOSE 3000 9000
 
-CMD ["./start.sh"]
+CMD ["/bin/bash", "/app/start.sh"]

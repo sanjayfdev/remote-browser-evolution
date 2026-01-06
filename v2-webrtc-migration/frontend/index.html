@@ -1,39 +1,148 @@
 <!DOCTYPE html>
-<html>
-<body style="margin:0;background:black">
-  <video id="v" autoplay playsinline></video>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Remote Chromium – WebRTC</title>
 
-  <script>
-    const pc = new RTCPeerConnection({
-      iceServers: [{ urls: "stun:stun.l.google.com:19302" }]
-    });
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      background: black;
+      overflow: hidden;
+    }
 
-    pc.ontrack = e => {
-      document.getElementById("v").srcObject = e.streams[0];
-    };
+    video {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+      background: black;
+    }
 
-    const ws = new WebSocket("ws://localhost:9000");
+    #status {
+      position: absolute;
+      top: 8px;
+      left: 8px;
+      padding: 6px 10px;
+      background: rgba(0,0,0,0.6);
+      color: #0f0;
+      font-family: monospace;
+      font-size: 12px;
+      z-index: 10;
+    }
+  </style>
+</head>
+<body>
 
-    ws.onmessage = async e => {
-        console.log(e)
-      const msg = JSON.parse(e.data);
+<div id="status">Connecting…</div>
+<video id="video" autoplay playsinline muted></video>
 
-      if (msg.type === "offer") {
-        await pc.setRemoteDescription({ type: "offer", sdp: msg.sdp });
-        const answer = await pc.createAnswer();
-        await pc.setLocalDescription(answer);
-        ws.send(JSON.stringify({ type: "answer", sdp: answer.sdp }));
-      }
+<script>
+/* ===============================
+   WebRTC + WebSocket Client
+   =============================== */
 
-      if (msg.type === "ice") {
-        await pc.addIceCandidate(msg);
-      }
-    };
+const statusEl = document.getElementById("status");
+const videoEl = document.getElementById("video");
 
-    pc.onicecandidate = e => {
-        console.log(e)
-      if (e.candidate) ws.send(JSON.stringify(e.candidate));
-    };
-  </script>
+let pc = null;
+let ws = null;
+
+/* ---------- PeerConnection ---------- */
+
+function createPeerConnection() {
+  pc = new RTCPeerConnection({
+    iceServers: [
+      { urls: "stun:stun.l.google.com:19302" }
+    ]
+  });
+
+  pc.ontrack = (event) => {
+    console.log("🎥 Video track received");
+    videoEl.srcObject = event.streams[0];
+    statusEl.textContent = "Streaming";
+  };
+
+  pc.onicecandidate = (event) => {
+    if (event.candidate && ws?.readyState === WebSocket.OPEN) {
+      ws.send(JSON.stringify({
+        type: "ice",
+        sdpMLineIndex: event.candidate.sdpMLineIndex,
+        candidate: event.candidate.candidate
+      }));
+    }
+  };
+}
+
+/* ---------- WebSocket (with retry) ---------- */
+
+function connectWebSocket() {
+  statusEl.textContent = "Connecting to signaling…";
+  console.log("🔄 Connecting to ws://localhost:9000");
+
+  ws = new WebSocket("ws://localhost:9000");
+
+  ws.onopen = () => {
+    console.log("✅ WebSocket connected");
+    statusEl.textContent = "Connected – waiting for offer";
+  };
+
+  ws.onmessage = async (event) => {
+    const msg = JSON.parse(event.data);
+    console.log("📩 Signal:", msg.type);
+
+    if (msg.type === "offer") {
+      if (!pc) createPeerConnection();
+
+      await pc.setRemoteDescription({
+        type: "offer",
+        sdp: msg.sdp
+      });
+
+      const answer = await pc.createAnswer();
+      await pc.setLocalDescription(answer);
+
+      ws.send(JSON.stringify({
+        type: "answer",
+        sdp: answer.sdp
+      }));
+
+      statusEl.textContent = "Negotiating…";
+    }
+
+    if (msg.type === "ice" && pc) {
+      await pc.addIceCandidate({
+        candidate: msg.candidate,
+        sdpMLineIndex: msg.sdpMLineIndex
+      });
+    }
+  };
+
+  ws.onerror = (err) => {
+    console.warn("⚠ WebSocket error", err);
+    ws.close();
+  };
+
+  ws.onclose = () => {
+    console.warn("❌ WebSocket closed, retrying in 1s…");
+    statusEl.textContent = "Reconnecting…";
+
+    if (pc) {
+      pc.close();
+      pc = null;
+    }
+
+    setTimeout(connectWebSocket, 1000);
+  };
+}
+
+/* ---------- Start ---------- */
+
+createPeerConnection();
+connectWebSocket();
+</script>
+
 </body>
 </html>
