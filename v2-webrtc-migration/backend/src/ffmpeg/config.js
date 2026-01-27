@@ -6,8 +6,8 @@ export const mediaCodecs = [
     payloadType: 96,
     parameters: {
       "packetization-mode": 1,
-      "profile-level-id": "42e01f",
-      "level-asymmetry-allowed": 1,
+      // "profile-level-id": "42e01f",
+      // "level-asymmetry-allowed": 1,
     },
   },
 ];

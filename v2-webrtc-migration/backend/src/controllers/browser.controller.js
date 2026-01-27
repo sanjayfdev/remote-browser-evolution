@@ -22,15 +22,15 @@ export const startStream =
       console.log("🧱 Creating PlainTransport with:", {
         listenIp: "0.0.0.0",
         announcedIp: process.env.ANNOUNCED_IP,
-        rtcpMux: true,
+        rtcpMux: false,
         comedia: true,
       });
 
       const transport = await router.createPlainTransport({
         listenIp: "0.0.0.0",
         announcedIp: process.env.ANNOUNCED_IP,
-        rtcpMux: true, // ✅ REQUIRED
-        comedia: false, // ✅ REQUIRED
+        rtcpMux: false, // ✅ REQUIRED
+        comedia: true, // ✅ REQUIRED
       });
       console.log("🚚 PlainTransport ID:", transport.id);
 
@@ -44,12 +44,19 @@ export const startStream =
 
       console.log("📡 RTP PORT:", localPort);
 
+      const rtpPort = transport.tuple.localPort;
+      const rtcpPort = transport.rtcpTuple.localPort;
+
+      console.log("📡 RTP PORT:", rtpPort);
+      console.log("📡 RTCP PORT:", rtcpPort);
+
+      const SSRC = 11111111;
       /* 3️⃣ Produce (NO connect call) */
       session.producer = await transport.produce({
         kind: "video",
         rtpParameters: {
           codecs: mediaCodecs,
-          encodings: [{ ssrc: 11111111 }],
+          encodings: [{ ssrc: SSRC }],
         },
       });
 
@@ -57,7 +64,7 @@ export const startStream =
 
       console.log("🎬 Producer RTP parameters:", {
         codecs: mediaCodecs,
-        encodings: [{ ssrc: 11111111 }],
+        encodings: [{ ssrc: SSRC }],
       });
 
       console.log("🚀 About to start FFmpeg with:", {
@@ -68,11 +75,13 @@ export const startStream =
 
       /* 4️⃣ Start FFmpeg (RTP ONLY) */
       session.ffmpeg = startFFmpeg({
-        ip: localIp, // usually 127.0.0.1 inside container
+        ip: process.env.ANNOUNCED_IP, // usually 127.0.0.1 inside container
         port: localPort, // 🔥 THIS MUST EXIST
         display: ":99",
+        rtpPort,
+        rtcpPort,
       });
-      
+
       setInterval(async () => {
         const stats = await session.producer.getStats();
         console.log("📊 RTP STATS CHECK:", stats);

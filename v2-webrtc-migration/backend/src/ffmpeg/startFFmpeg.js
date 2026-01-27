@@ -1,42 +1,55 @@
 import { spawn } from "child_process";
 
-export function startFFmpeg({ ip, rtpPort, rtcpPort, display }) {
-   console.log("🧪 startFFmpeg received", { ip, rtpPort, rtcpPort, display });
-  const DISPLAY = display || ":99";
+export function startFFmpeg({ ip, port, display, rtpPort, rtcpPort }) {
+  console.log("🎥 startFFmpeg received:", {
+    ip,
+    port,
+    display,
+    rtpPort,
+    rtcpPort,
+  });
 
   return spawn("ffmpeg", [
-    "-loglevel", "warning",
+    "-loglevel",
+    "info",
 
-    "-fflags", "nobuffer",
-    "-flags", "low_delay",
-    "-probesize", "32",
-    "-analyzeduration", "0",
-
-    "-f", "x11grab",
-    "-video_size", "1280x720",
-    "-framerate", "30",
-    "-i", DISPLAY,
-
-    "-c:v", "libx264",
-    "-preset", "ultrafast",
-    "-tune", "zerolatency",
-    "-profile:v", "baseline",
-    "-level", "3.1",
-    "-pix_fmt", "yuv420p",
-
-    "-x264-params",
-    "keyint=30:min-keyint=30:scenecut=0:repeat-headers=1",
-
-    "-bf", "0",
-    "-b:v", "4M",
-    "-maxrate", "4M",
-    "-bufsize", "2M",
+    "-f",
+    "x11grab",
+    "-video_size",
+    "1280x720",
+    "-framerate",
+    "30",
+    "-i",
+    display,
 
     "-an",
 
-    "-f", "rtp",
-    "-payload_type", "96",
-    "-ssrc", "11111111",
-    `rtp://${ip}:${rtpPort}?rtcpport=${rtcpPort}&localrtcpport=${rtcpPort}`,
+    "-c:v",
+    "libx264",
+    "-preset",
+    "ultrafast",
+    "-tune",
+    "zerolatency",
+    "-pix_fmt",
+    "yuv420p",
+    "-profile:v",
+    "baseline",
+    "-level",
+    "3.1",
+    "-bf",
+    "0",
+    "-x264-params",
+    "keyint=30:min-keyint=30:scenecut=0",
+
+    "-payload_type",
+    "96",
+    "-ssrc",
+    "11111111",
+
+    "-f",
+    "rtp",
+
+    // ✅ RTCP mux MUST be here (URL param)
+    `rtp://${ip}:${rtpPort}?rtcpport=${rtcpPort}&pkt_size=1200`,
   ]);
 }
