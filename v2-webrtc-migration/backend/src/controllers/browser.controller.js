@@ -18,25 +18,12 @@ export const startStream =
       // Allow Chromium to paint
       await new Promise((r) => setTimeout(r, 800));
 
-      /* 2️⃣ PlainTransport (CORRECT CONFIG) */
-      console.log("🧱 Creating PlainTransport with:", {
-        listenIp: "0.0.0.0",
-        announcedIp: process.env.ANNOUNCED_IP,
-        rtcpMux: false,
-        comedia: true,
-      });
-
       const transport = await router.createPlainTransport({
         listenIp: "0.0.0.0",
         announcedIp: process.env.ANNOUNCED_IP,
         rtcpMux: false, // ✅ REQUIRED
         comedia: true, // ✅ REQUIRED
       });
-      console.log("🚚 PlainTransport ID:", transport.id);
-
-      console.log("📦 transport.tuple:", transport.tuple);
-
-      console.log("📦 transport.rtcpTuple:", transport.rtcpTuple);
 
       session.plainTransport = await transport;
 
@@ -62,17 +49,6 @@ export const startStream =
 
       console.log("🎬 Producer paused?", session.producer.paused);
 
-      console.log("🎬 Producer RTP parameters:", {
-        codecs: mediaCodecs,
-        encodings: [{ ssrc: SSRC }],
-      });
-
-      console.log("🚀 About to start FFmpeg with:", {
-        destinationIp: process.env.ANNOUNCED_IP,
-        destinationPort: localPort,
-        display: process.env.DISPLAY || ":99",
-      });
-
       /* 4️⃣ Start FFmpeg (RTP ONLY) */
       session.ffmpeg = startFFmpeg({
         ip: process.env.ANNOUNCED_IP, // usually 127.0.0.1 inside container
@@ -82,10 +58,10 @@ export const startStream =
         rtcpPort,
       });
 
-      setInterval(async () => {
+      setTimeout(async () => {
         const stats = await session.producer.getStats();
         console.log("📊 RTP STATS CHECK:", stats);
-      }, 1000);
+      }, 2000);
 
       session.ffmpeg.stderr.on("data", (d) => {
         console.log("🎥 FFmpeg:", d.toString());
