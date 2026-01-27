@@ -36,30 +36,34 @@ startBtn.onclick = async () => {
   ws = new WebSocket("ws://127.0.0.1:8080");
 
   ws.onopen = () => {
-    ws.send(JSON.stringify({
-      action: "getRtpCapabilities",
-      sessionId,
-    }));
+    ws.send(
+      JSON.stringify({
+        action: "getRtpCapabilities",
+        sessionId,
+      }),
+    );
   };
   console.log("🔌 WS connected");
-  
+
   ws.onmessage = handleWsMessage;
 };
 
 /* ---------- WebSocket signaling ---------- */
 async function handleWsMessage(event) {
   const msg = JSON.parse(event.data);
-  
+
   console.log("📨 WS message:", msg.action);
   /* ---------- RTP Capabilities ---------- */
   if (msg.action === "rtpCapabilities") {
     device = new mediasoupClient.Device();
     await device.load({ routerRtpCapabilities: msg.data });
 
-    ws.send(JSON.stringify({
-      action: "createTransport",
-      sessionId,
-    }));
+    ws.send(
+      JSON.stringify({
+        action: "createTransport",
+        sessionId,
+      }),
+    );
   }
 
   /* ---------- Transport ---------- */
@@ -68,8 +72,7 @@ async function handleWsMessage(event) {
 
     // ✅ FIX 1: FORCE H264
     const h264Codecs = device.rtpCapabilities.codecs.filter(
-      c => c.kind === "video" &&
-           c.mimeType.toLowerCase() === "video/h264"
+      (c) => c.kind === "video" && c.mimeType.toLowerCase() === "video/h264",
     );
 
     if (transport.setCodecPreferences) {
@@ -77,24 +80,28 @@ async function handleWsMessage(event) {
     }
 
     transport.on("connect", ({ dtlsParameters }, callback, errback) => {
-      ws.send(JSON.stringify({
-        action: "connectTransport",
-        sessionId,
-        dtlsParameters,
-      }));
+      ws.send(
+        JSON.stringify({
+          action: "connectTransport",
+          sessionId,
+          dtlsParameters,
+        }),
+      );
       callback(); // ✅ mediasoup-client handles state
     });
 
-    transport.on("connectionstatechange", state => {
+    transport.on("connectionstatechange", (state) => {
       console.log("🚦 Transport state:", state);
     });
 
     // ✅ FIX 2: Immediately request consume
-    ws.send(JSON.stringify({
-      action: "consume",
-      sessionId,
-      rtpCapabilities: device.rtpCapabilities,
-    }));
+    ws.send(
+      JSON.stringify({
+        action: "consume",
+        sessionId,
+        rtpCapabilities: device.rtpCapabilities,
+      }),
+    );
   }
 
   /* ---------- Consumer ---------- */
@@ -126,4 +133,61 @@ async function handleWsMessage(event) {
       console.log("📊 Consumer stats:", [...stats.values()]);
     }, 2000);
   }
+
+  video.addEventListener("wheel", (e) => {
+    ws.send(
+      JSON.stringify({
+        action: "input",
+        type: "scroll",
+        payload: {
+          deltaX: e.deltaX,
+          deltaY: e.deltaY,
+        },
+      }),
+    );
+  });
+
+  window.addEventListener("keydown", (e) => {
+    ws.send(
+      JSON.stringify({
+        action: "input",
+        type: "keyPress",
+        payload: {
+          key: e.key,
+          code: e.code,
+          event: "down",
+        },
+      }),
+    );
+  });
+
+  window.addEventListener("keyup", (e) => {
+    ws.send(
+      JSON.stringify({
+        action: "input",
+        type: "keyPress",
+        payload: {
+          key: e.key,
+          code: e.code,
+          event: "up",
+        },
+      }),
+    );
+  });
+
+  video.addEventListener("click", (e) => {
+    const rect = video.getBoundingClientRect();
+    const x = e.clientX - rect.left;
+    const y = e.clientY - rect.top;
+    ws.send(
+      JSON.stringify({
+        action: "input",
+        type: "mouseClick",
+        payload: {
+          x,
+          y,
+        },
+      }),
+    );
+  });
 }
