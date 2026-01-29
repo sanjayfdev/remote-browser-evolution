@@ -12,8 +12,9 @@ export const startStream =
       const session = sessionManager.create(sessionId);
 
       /* 1️⃣ Launch Chromium */
-      const { browser } = await launchBrowser(url);
+      const { browser, page } = await launchBrowser(url);
       session.browser = browser;
+      session.page = page;
 
       // Allow Chromium to paint
       await new Promise((r) => setTimeout(r, 800));
@@ -63,9 +64,9 @@ export const startStream =
         console.log("📊 RTP STATS CHECK:", stats);
       }, 2000);
 
-      session.ffmpeg.stderr.on("data", (d) => {
-        console.log("🎥 FFmpeg:", d.toString());
-      });
+      // session.ffmpeg.stderr.on("data", (d) => {
+      //   console.log("🎥 FFmpeg:", d.toString());
+      // });
 
       session.ffmpeg.on("exit", (code) => {
         console.log("❌ FFmpeg exited:", code);

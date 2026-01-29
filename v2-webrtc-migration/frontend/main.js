@@ -128,66 +128,70 @@ async function handleWsMessage(event) {
     log("🎥 Streaming started");
 
     // 🔍 Debug (optional, but very useful)
-    setInterval(async () => {
-      const stats = await consumer.getStats();
-      console.log("📊 Consumer stats:", [...stats.values()]);
-    }, 2000);
+    // setInterval(async () => {
+    //   const stats = await consumer.getStats();
+    //   console.log("📊 Consumer stats:", [...stats.values()]);
+    // }, 2000);
   }
 
-  video.addEventListener("wheel", (e) => {
-    ws.send(
-      JSON.stringify({
-        action: "input",
-        type: "scroll",
-        payload: {
-          deltaX: e.deltaX,
-          deltaY: e.deltaY,
-        },
-      }),
-    );
-  });
+  interactionEvents();
+}
 
-  window.addEventListener("keydown", (e) => {
-    ws.send(
-      JSON.stringify({
-        action: "input",
-        type: "keyPress",
-        payload: {
-          key: e.key,
-          code: e.code,
-          event: "down",
-        },
-      }),
-    );
-  });
+function interactionEvents() {
+  video.removeEventListener("click", handleClick);
+  video.addEventListener("click", handleClick);
+}
 
-  window.addEventListener("keyup", (e) => {
-    ws.send(
-      JSON.stringify({
-        action: "input",
-        type: "keyPress",
-        payload: {
-          key: e.key,
-          code: e.code,
-          event: "up",
-        },
-      }),
-    );
-  });
+function getActiveVideoRect(video) {
+  const videoAspect = video.videoWidth / video.videoHeight;
+  const elementAspect = video.clientWidth / video.clientHeight;
 
-  video.addEventListener("click", (e) => {
-    const rect = video.getBoundingClientRect();
-    const x = e.clientX - rect.left;
-    const y = e.clientY - rect.top;
-    ws.send(
-      JSON.stringify({
-        action: "input",
-        type: "mouseClick",
-        payload: {
-          x,
-          y,
-        },
-      }),
-    );
-  });
+  let activeWidth, activeHeight, offsetX, offsetY;
+
+  if (elementAspect > videoAspect) {
+    // Black bars on left/right
+    activeHeight = video.clientHeight;
+    activeWidth = activeHeight * videoAspect;
+    offsetX = (video.clientWidth - activeWidth) / 2;
+    offsetY = 0;
+  } else {
+    // Black bars on top/bottom
+    activeWidth = video.clientWidth;
+    activeHeight = activeWidth / videoAspect;
+    offsetX = 0;
+    offsetY = (video.clientHeight - activeHeight) / 2;
+  }
+
+  return { activeWidth, activeHeight, offsetX, offsetY };
+}
+
+function handleClick(e) {
+  const rect = video.getBoundingClientRect();
+  console.log(rect);
+  const { activeWidth, activeHeight, offsetX, offsetY } =
+    getActiveVideoRect(video);
+
+  const x = e.clientX - rect.left - offsetX;
+  const y = e.clientY - rect.top - offsetY;
+  console.log("x , y", x, y);
+  console.log("height, width", activeHeight, activeWidth);
+  // ❌ Click inside black bars → ignore
+  if (x < 0 || y < 0 || x > activeWidth || y > activeHeight) {
+    console.log("Click in black bar, ignored");
+    return;
+  }
+
+  ws.send(
+    JSON.stringify({
+      action: "input",
+      type: "mouseClick",
+      sessionId,
+      payload: {
+        x,
+        y,
+        videoWidth: activeWidth,
+        videoHeight: activeHeight,
+      },
+    }),
+  );
 }

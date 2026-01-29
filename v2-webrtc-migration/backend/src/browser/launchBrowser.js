@@ -27,13 +27,16 @@ export async function launchBrowser(urlToOpen) {
 
   // ✅ Always create your own page
   const page = await browser.newPage();
-
+  const pages = await browser.pages();
+  console.log(pages)
+  
   // ✅ Explicit viewport = FFmpeg capture size
   await page.setViewport({
     width: 1280,
     height: 720,
     deviceScaleFactor: 1,
   });
+
 
   try {
     await page.goto(urlToOpen, { waitUntil: "domcontentloaded" });

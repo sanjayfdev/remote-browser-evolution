@@ -7,7 +7,7 @@ export async function handleMouseClick(session, payload) {
   if (!browserViewport) return;
 
   const browserX = (x / videoWidth) * browserViewport.width;
-  const browserY = (y / videoHeight) * browserViewport.height - 85;
+  const browserY = (y / videoHeight) * browserViewport.height - 140; // Adjust for any offsets like browser UI
  
   await page.mouse.move(browserX, browserY);
   await page.mouse.down();
