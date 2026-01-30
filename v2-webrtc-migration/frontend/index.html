@@ -1,58 +1,77 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-  <meta charset="UTF-8" />
-  <title>Automated Browser Stream</title>
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <style>
-    body {
-      margin: 0;
-      background: #111;
-      color: white;
-      font-family: sans-serif;
-      display: flex;
-      height: 100vh;
-    }
+  <head>
+    <meta charset="UTF-8" />
+    <title>Automated Browser Stream</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <style>
+      body {
+        margin: 0;
+        background: #111;
+        color: white;
+        font-family: sans-serif;
+        /* display: flex; */
+        height: 100vh;
+      }
 
-    #left {
-      width: 30%;
-      padding: 16px;
-      box-sizing: border-box;
-      border-right: 1px solid #333;
-    }
+      main{
+        display: flex;
+        flex: 1;
+        height: 100%;
+      }
 
-    #right {
-      flex: 1;
-      background: black;
-    }
+      #remote-control {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        z-index: 10;
+        padding: 8px 12px;
+        font-size: 14px;
+        border-radius: 20px;
+      } 
 
-    video {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      background: black;
-    }
+      #left {
+        width: 30%;
+        padding: 16px;
+        box-sizing: border-box;
+        border-right: 1px solid #333;
+      }
 
-    input, button {
-      width: 100%;
-      padding: 10px;
-      margin-top: 10px;
-      font-size: 14px;
-    }
-  </style>
-</head>
-<body>
-  <div id="left">
-    <h3>Enter URL</h3>
-    <input id="url" placeholder="https://example.com" />
-    <button id="start">Start Session</button>
-    <pre id="status"></pre>
-  </div>
+      #right {
+        flex: 1;
+        background: black;
+      }
 
-  <div id="right">
-    <video id="video" autoplay playsinline></video>
-  </div>
+      video {
+        width: 100%;
+        height: 100%;
+        object-fit: contain;
+        background: black;
+      }
 
-  <script type="module" src="./main.js"></script>
-</body>
+      input,
+      #start {
+        width: 100%;
+        padding: 10px;
+        margin-top: 10px;
+        font-size: 14px;
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <div id="left">
+        <h3>Enter URL</h3>
+        <input id="url" placeholder="https://example.com" />
+        <button id="start">Start Session</button>
+        <pre id="status"></pre>
+      </div>
+
+      <div id="right">
+        <video id="video" autoplay playsinline></video>
+      </div>
+    </main>
+    <button id="remote-control">Take Control</button>
+    <script type="module" src="./main.js"></script>
+  </body>
 </html>

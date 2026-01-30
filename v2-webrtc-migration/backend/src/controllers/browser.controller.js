@@ -2,6 +2,7 @@ import { v4 as uuid } from "uuid";
 import { launchBrowser } from "../browser/launchBrowser.js";
 import { startFFmpeg } from "../ffmpeg/startFFmpeg.js";
 import dotenv from "dotenv";
+import { getDisplaySize } from "../input/getDisplaySize.js";
 dotenv.config();
 
 export const startStream =
@@ -15,6 +16,8 @@ export const startStream =
       const { browser, page } = await launchBrowser(url);
       session.browser = browser;
       session.page = page;
+      session.display = getDisplaySize();
+      session.displayName = process.env.DISPLAY || ":99";
 
       // Allow Chromium to paint
       await new Promise((r) => setTimeout(r, 800));
@@ -54,7 +57,7 @@ export const startStream =
       session.ffmpeg = startFFmpeg({
         ip: process.env.ANNOUNCED_IP, // usually 127.0.0.1 inside container
         port: localPort, // 🔥 THIS MUST EXIST
-        display: ":99",
+        display: process.env.DISPLAY || ":99",
         rtpPort,
         rtcpPort,
       });

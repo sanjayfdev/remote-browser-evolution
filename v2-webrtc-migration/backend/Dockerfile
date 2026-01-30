@@ -14,6 +14,9 @@ RUN apt-get update && apt-get install -y \
     gnupg \
     ca-certificates \
     curl \
+    xdotool \
+    x11-utils \
+    openbox \
     xvfb \
     ffmpeg \
     dumb-init \
