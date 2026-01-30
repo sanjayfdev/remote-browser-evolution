@@ -1,6 +1,7 @@
 import { WebSocketServer } from "ws";
 import dotenv from "dotenv";
 import { handleInput } from "../input/handleInput.js";
+import { onTakeControl } from "../input/handleInputsOS.js";
 
 dotenv.config();
 
@@ -116,6 +117,12 @@ export function startWsServer({ router, sessionManager }) {
         if (data.action === "input") {
           await handleInput(session, data);
         }
+
+        // take control of the mouse and keyboard
+        if(data.action === "takeControl") {
+          onTakeControl(session);
+        }
+
       } catch (err) {
         console.error("❌ WS message error:", err.message);
         ws.send(JSON.stringify({ error: "Invalid WS payload" }));

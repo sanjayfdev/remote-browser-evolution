@@ -4,6 +4,7 @@ const video = document.getElementById("video");
 const startBtn = document.getElementById("start");
 const urlInput = document.getElementById("url");
 const status = document.getElementById("status");
+const remoteControlBtn = document.getElementById("remote-control");
 
 let device;
 let transport;
@@ -140,6 +141,9 @@ async function handleWsMessage(event) {
 function interactionEvents() {
   video.removeEventListener("click", handleClick);
   video.addEventListener("click", handleClick);
+  video.removeEventListener("mousemove", handleMouseMove);
+  video.addEventListener("mousemove", handleMouseMove);
+  remoteControlBtn.addEventListener("click", handleControlBtn);
 }
 
 function getActiveVideoRect(video) {
@@ -195,3 +199,59 @@ function handleClick(e) {
     }),
   );
 }
+
+function handleMouseMove(e) {
+  const rect = video.getBoundingClientRect();
+  console.log(rect);
+  const { activeWidth, activeHeight, offsetX, offsetY } =
+    getActiveVideoRect(video);
+  const x = e.clientX - rect.left - offsetX;
+  const y = e.clientY - rect.top - offsetY;
+  console.log("x , y", x, y);
+  console.log("height, width", activeHeight, activeWidth);
+  // ❌ Move inside black bars → ignore
+  if (x < 0 || y < 0 || x > activeWidth || y > activeHeight) {
+    console.log("Move in black bar, ignored");
+    return;
+  }
+  ws.send(
+    JSON.stringify({
+      action: "input",
+      type: "mouseMove",
+      sessionId,
+      payload: {
+        x,
+        y,
+        videoWidth: activeWidth,
+        videoHeight: activeHeight,
+      },
+    }),
+  );
+}
+
+function enableRemoteControl() {
+  video.style.pointerEvents = "auto";
+  log("🖱️ Remote control enabled");
+}
+
+function disableRemoteControl() {
+  video.style.pointerEvents = "none";
+  log("🚫 Remote control disabled");
+}
+
+const handleControlBtn = () => {
+  ws.send(
+    JSON.stringify({
+      action: "takeControl",
+      sessionId,
+    }),
+  );
+  if (video.style.pointerEvents === "auto") {
+    disableRemoteControl();
+    remoteControlBtn.textContent = "Take Control";
+  } else {
+    enableRemoteControl();
+    remoteControlBtn.textContent = "Disable Control";
+  }
+  remoteControlBtn.disabled = true;
+};

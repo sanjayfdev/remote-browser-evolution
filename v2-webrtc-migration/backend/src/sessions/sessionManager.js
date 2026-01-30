@@ -13,6 +13,8 @@ export class SessionManager {
       plainTransport: null,
       transports: new Set(),
       viewport: null,
+      display : null,
+      displayName : null,
     };
     this.sessions.set(sessionId, session);
     return session;

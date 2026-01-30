@@ -25,16 +25,17 @@ const { worker, router } = await initMediasoup();
 /* ---------- sessions ---------- */
 const sessionManager = new SessionManager();
 
-app.use("/", streamRouter(sessionManager, router, mediaCodecs));
-
 /* ---------- start WS signaling ---------- */
 startWsServer({ router, sessionManager });
+
+app.use("/", streamRouter(sessionManager, router, mediaCodecs));
 
 console.log("ENV:", {
   HTTP_PORT: process.env.HTTP_PORT,
   WS_PORT: process.env.WS_PORT,
   ANNOUNCED_IP: process.env.ANNOUNCED_IP,
 });
+
 /* ---------- start HTTP API ---------- */
 app.listen(PORT, "0.0.0.0", () => {
   console.log(`🚀 HTTP API running on http://localhost:${PORT}`);
