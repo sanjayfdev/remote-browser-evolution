@@ -1,11 +1,12 @@
 import { WebSocketServer } from "ws";
 import dotenv from "dotenv";
 import { handleInput } from "../input/handleInput.js";
-import { onTakeControl } from "../input/handleInputsOS.js";
+import { onTakeControl } from "../input/mouseInputs.js";
+import { releaseAllKeys } from "../input/keyboardOS.js";
 
 dotenv.config();
 
-export function startWsServer({ router, sessionManager }) {
+export function startSignalingWs({ router, sessionManager }) {
   const WS_PORT = process.env.WS_PORT || 8080;
   const announcedIp = process.env.ANNOUNCED_IP;
 
@@ -112,17 +113,6 @@ export function startWsServer({ router, sessionManager }) {
             }),
           );
         }
-
-        /* 5️⃣ Input Events */
-        if (data.action === "input") {
-          await handleInput(session, data);
-        }
-
-        // take control of the mouse and keyboard
-        if(data.action === "takeControl") {
-          onTakeControl(session);
-        }
-
       } catch (err) {
         console.error("❌ WS message error:", err.message);
         ws.send(JSON.stringify({ error: "Invalid WS payload" }));
@@ -135,4 +125,40 @@ export function startWsServer({ router, sessionManager }) {
   });
 
   return wss;
+}
+
+export function startInputWs(sessionManager ) {
+  const WS_PORT = process.env.INPUT_WS_PORT || 8081;
+
+  const wss = new WebSocketServer({ port: WS_PORT, host: "0.0.0.0" });
+  console.log(`📡 WebSocket signaling running on :${WS_PORT}`);
+
+  wss.on("connection", (ws) => {
+    ws.on("message", async (msg) => {
+      try {
+        const data = JSON.parse(msg.toString());
+        const session = sessionManager.get(data.sessionId);
+        if (!session) {
+          return ws.send(JSON.stringify({ error: "Invalid sessionId" }));
+        }
+
+        /* 5️⃣ Input Events */
+        if (data.action === "input") {
+          await handleInput(session, data);
+        }
+
+        // take control of the mouse and keyboard
+        if (data.action === "takeControl") {
+          onTakeControl(session);
+        }
+      } catch (err) {
+        console.error("❌ WS message error:", err.message);
+        ws.send(JSON.stringify({ error: "Invalid WS payload" }));
+      }
+    });
+
+    ws.on("close", ()=>{
+      releaseAllKeys();
+    })
+  });
 }

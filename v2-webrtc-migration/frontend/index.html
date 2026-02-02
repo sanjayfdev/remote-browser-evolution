@@ -5,30 +5,31 @@
     <title>Automated Browser Stream</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <style>
+      html,
       body {
+        width: 100%;
+        height: 100%;
         margin: 0;
         background: #111;
         color: white;
-        font-family: sans-serif;
-        /* display: flex; */
-        height: 100vh;
       }
 
-      main{
+      main {
         display: flex;
-        flex: 1;
-        height: 100%;
+        width: 100%;
+        height: 100%; /* ✅ this now works */
+        position: relative;
       }
 
       #remote-control {
         position: absolute;
-        top: 16px;
-        right: 16px;
+        top: 300px;
+        right: 600px;
         z-index: 10;
         padding: 8px 12px;
         font-size: 14px;
         border-radius: 20px;
-      } 
+      }
 
       #left {
         width: 30%;
@@ -39,9 +40,9 @@
 
       #right {
         flex: 1;
+        height: 100%;
         background: black;
       }
-
       video {
         width: 100%;
         height: 100%;
@@ -68,10 +69,16 @@
       </div>
 
       <div id="right">
-        <video id="video" autoplay playsinline></video>
+        <video
+          id="video"
+          tabindex="0"
+          oncontextmenu="return false;"
+          autoplay
+          playsinline
+        ></video>
       </div>
+      <button id="remote-control">Take Control</button>
     </main>
-    <button id="remote-control">Take Control</button>
     <script type="module" src="./main.js"></script>
   </body>
 </html>

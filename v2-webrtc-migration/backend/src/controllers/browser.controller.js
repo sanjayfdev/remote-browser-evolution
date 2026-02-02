@@ -3,6 +3,7 @@ import { launchBrowser } from "../browser/launchBrowser.js";
 import { startFFmpeg } from "../ffmpeg/startFFmpeg.js";
 import dotenv from "dotenv";
 import { getDisplaySize } from "../input/getDisplaySize.js";
+
 dotenv.config();
 
 export const startStream =
@@ -87,3 +88,16 @@ export const startStream =
       res.status(500).json({ error: "Failed to start session" });
     }
   };
+
+export const stopStream = (sessionManager) => async (req, res) => {
+  const { sessionId } = req.body;
+  console.log(sessionId);
+  const session = sessionManager.get(sessionId);
+  if (!session) {
+    return res.status(400).json({ error: "Invalid sessionId" });
+  }
+  await session.browser.close();
+  await session.close();
+  sessionManager.delete(sessionId);
+  res.json({ success: true });
+};

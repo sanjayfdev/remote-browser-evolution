@@ -2,10 +2,11 @@ import express from "express";
 import cors from "cors";
 import { mediaCodecs } from "./ffmpeg/config.js";
 import { SessionManager } from "./sessions/sessionManager.js";
-import { startWsServer } from "./signalling/ws.js";
 import { initMediasoup } from "./mediasoup/init.js";
 import streamRouter from "./routes/browser.routes.js";
 import dotenv from "dotenv";
+import { startSignalingWs } from "./ws/signalling.js";
+import { startInputWs } from "./ws/signalling.js";
 
 dotenv.config();
 
@@ -26,7 +27,8 @@ const { worker, router } = await initMediasoup();
 const sessionManager = new SessionManager();
 
 /* ---------- start WS signaling ---------- */
-startWsServer({ router, sessionManager });
+startSignalingWs({ router, sessionManager });
+startInputWs(sessionManager );
 
 app.use("/", streamRouter(sessionManager, router, mediaCodecs));
 

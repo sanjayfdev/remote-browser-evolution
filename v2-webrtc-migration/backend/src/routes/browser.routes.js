@@ -1,11 +1,11 @@
 import { Router } from "express";
-import { startStream } from "../controllers/browser.controller.js";
+import { startStream, stopStream } from "../controllers/browser.controller.js";
 
 const streamRouter = (sessionManager, router, mediaCodecs) => {
   const streamRouter = Router();
   streamRouter.post("/start", startStream(sessionManager, router, mediaCodecs));
 
-  // router.post("/stop", stopBrowserSession);
+  streamRouter.post("/stop", stopStream(sessionManager));
   return streamRouter;
 };
 

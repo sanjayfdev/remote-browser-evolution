@@ -14,8 +14,8 @@ export function startFFmpeg({ ip, display, rtpPort, rtcpPort }) {
 
     // ---------- X11 CAPTURE ----------
     "-f", "x11grab",
-    "-video_size", "1280x720",
-    "-framerate", "60",              // ⬅️ IMPORTANT
+    "-video_size", "1024x576",
+    "-framerate", "30",              // ⬅️ IMPORTANT
     "-i", display,
 
     // ---------- NO AUDIO ----------
@@ -37,7 +37,7 @@ export function startFFmpeg({ ip, display, rtpPort, rtcpPort }) {
     "-sc_threshold", "0",
 
     // ---------- FORCE CFR ----------
-    "-vsync", "1",
+    "-vsync", "0",
 
     // ---------- RTP ----------
     "-payload_type", "96",

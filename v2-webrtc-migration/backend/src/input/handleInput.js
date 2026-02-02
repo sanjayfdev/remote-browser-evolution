@@ -1,42 +1,40 @@
-import { handleKeyPress } from "./handleKeyPress.js";
-import { handleMouseClick } from "./handleMouseClick.js";
 import {
   handleClick,
+  handleKeyPressOS,
+  handleMouseWheel,
   mapToDisplay,
-  mouseDown,
-  mouseUp,
-} from "./handleInputsOS.js";
-import { handleScroll } from "./handleScroll.js";
+} from "./mouseInputs.js";
+import { handleKeyDown, handleKeyUp } from "./keyboardOS.js";
 
 export async function handleInput(session, data) {
-  const page = session.page; // Puppeteer page
+  const page = session.page;
   if (!page) return;
-  console.log("handleInput called");
-  const { type, payload } = data;
+  const { type, payload } = data.payload;
 
-  if (type === "mouseClick") {
-    // await handleMouseClick(session, payload);
-    mapToDisplay(session, payload);
-    handleClick();
-  }
+  switch (type) {
+    case "mouseMove":
+      mapToDisplay(session, payload);
+      break;
 
-  if (type === "keyPress") {
-    await handleKeyPress(page, payload);
-  }
+    case "mouseClick":
+      mapToDisplay(session, payload);
+      handleClick();
+      break;
 
-  if (type === "scroll") {
-    await handleScroll(session, payload);
-  }
+    case "keyDown":
+      handleKeyDown(payload);
+      break;
 
-  if (type === "mouseMove") {
-    mapToDisplay(session, payload);
-  }
+    case "keyUp":
+      handleKeyUp(payload);
+      break;
 
-  if (data.type === "mouseDown") {
-    mouseDown(1);
-  }
+    case "keyPress":
+      handleKeyPressOS(payload);
+      break;
 
-  if (data.type === "mouseUp") {
-    mouseUp(1);
+    case "scroll":
+      handleMouseWheel(payload);
+      break;
   }
 }

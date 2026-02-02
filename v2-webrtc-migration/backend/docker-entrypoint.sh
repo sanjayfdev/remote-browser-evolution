@@ -2,7 +2,7 @@
 set -e
 
 echo "🖥️ Starting Xvfb on DISPLAY=:99"
-Xvfb :99 -screen 0 1280x720x24 +extension RANDR &
+Xvfb :99 -screen 0 1024x576x24 +extension RANDR &
 
 # Give Xvfb a moment
 sleep 1

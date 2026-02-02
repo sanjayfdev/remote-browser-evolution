@@ -8,35 +8,41 @@ export async function launchBrowser(urlToOpen) {
     urlToOpen = "https://www.google.com";
   }
 
-  // ✅ IMPORTANT: DISPLAY must be ENV, not arg
+
   process.env.DISPLAY = ":99";
 
   const browser = await puppeteer.launch({
     executablePath: "/usr/bin/google-chrome",
-    headless: false,                 // REQUIRED for X11
-    defaultViewport: null,           // ❗ DO NOT set here
+    headless: false, // REQUIRED for X11
+    defaultViewport: null, 
     args: [
       "--no-sandbox",
       "--disable-dev-shm-usage",
       "--disable-gpu",
       "--disable-software-rasterizer",
       "--window-position=0,0",
-      "--window-size=1280,720",
+      "--window-size=1024,576",
+      "--disable-background-timer-throttling",
+      "--disable-renderer-backgrounding",
+      "--disable-features=CalculateNativeWinOcclusion",
+      "--disable-extensions",
+      "--disable-infobars",
+      // "--kiosk",
     ],
   });
 
   // ✅ Always create your own page
   const page = await browser.newPage();
   const pages = await browser.pages();
-  console.log(pages)
-  
+  console.log(pages);
+
   // ✅ Explicit viewport = FFmpeg capture size
   await page.setViewport({
-    width: 1280,
-    height: 720,
+    width: 1024,
+    height: 576,
     deviceScaleFactor: 1,
   });
-
+  
 
   try {
     await page.goto(urlToOpen, { waitUntil: "domcontentloaded" });
